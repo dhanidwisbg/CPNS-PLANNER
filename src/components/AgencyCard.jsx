@@ -1,50 +1,56 @@
 import React from 'react';
-import { ChevronRight, GraduationCap, Calendar, FileText } from 'lucide-react';
+import { Building2, Building, ChevronRight, GraduationCap, Award } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { getAgencyLogo } from '../utils/logoMapper';
 
 const AgencyCard = ({ agency, onClick }) => {
-  const pdfLink = agency['DETAIL LINK PDF'];
-  // Check for valid URL or non-placeholder text
-  const hasPdf = pdfLink && 
-                 pdfLink.startsWith('http') && 
-                 pdfLink !== "LINK DETAIL " && 
-                 pdfLink !== "";
+  const name = agency['INSTANSI '] || 'Unknown Agency';
+  const isKementerian = name.toLowerCase().includes('kementerian');
+  
+  const formasiText = agency['TERSEDIA FORMASI LULUSAN '] || '';
+  const formasi = formasiText.split('\r\n')[0] || 'N/A';
+  
+  const ipkTextFull = agency['SYARAT IPK / Nilai '] || '';
+  const ipkVal = ipkTextFull.match(/Minimal (\d+[.,]\d+)/)?.[1] || '3.00';
 
-  const handlePdfClick = (e) => {
-    e.stopPropagation(); // Prevent opening the detail modal
-    if (hasPdf) {
-      window.open(pdfLink, '_blank', 'noopener,noreferrer');
-    }
-  };
+  const logoUrl = getAgencyLogo(name);
 
   return (
-    <div className="agency-card fade-in" onClick={onClick}>
-      <div className="card-header">
-        <h3>{agency['INSTANSI ']}</h3>
-      </div>
-      <div className="card-body">
-        <div className="info-item">
-          <GraduationCap size={18} className="text-azure" />
-          <span>{agency['TERSEDIA FORMASI LULUSAN ']?.replace(/\n/g, ', ')}</span>
+    <motion.div 
+      className="agency-card-compact"
+      onClick={onClick}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <div className="card-header-flex">
+        <div className="agency-icon-box">
+          {logoUrl ? (
+            <img src={logoUrl} alt={name} style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
+          ) : (
+            isKementerian ? <Building2 size={28} /> : <Building size={28} />
+          )}
         </div>
-        <div className="info-item">
-          <Calendar size={18} className="text-azure" />
-          <span>{agency['SYARAT USIA']?.split('\n')[0]}</span>
+        <h3 className="agency-name-compact" title={name}>{name}</h3>
+      </div>
+      
+      <div className="card-stats">
+        <div className="stat-pill">
+          <GraduationCap size={14} color="var(--primary)" /> {formasi}
+        </div>
+        <div className="stat-pill">
+          <Award size={14} color="var(--primary)" /> IPK {ipkVal}
         </div>
       </div>
-      <div className="card-footer">
-        {hasPdf ? (
-          <button className="btn-pdf-shortcut" onClick={handlePdfClick} title="Buka PDF Pengumuman Resmi">
-            <FileText size={18} /> Lihat PDF
-          </button>
-        ) : (
-          <span className="no-pdf-text">PDF Belum Tersedia</span>
-        )}
-        <button className="btn-detail-arrow">
-          Detail <ChevronRight size={18} />
-        </button>
+      
+      <div className="agency-info-tag">
+        {isKementerian ? 'Kementerian' : 'Lembaga / Instansi'}
       </div>
-
-    </div>
+      
+      <div className="card-footer-action">
+        Lihat Detail Syarat <ChevronRight size={18} />
+      </div>
+    </motion.div>
   );
 };
 

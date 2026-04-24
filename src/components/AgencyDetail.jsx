@@ -1,140 +1,246 @@
 import React from 'react';
-import { X, CheckCircle2, Circle, AlertCircle, ExternalLink, Calendar, FileText, Download } from 'lucide-react';
+import { 
+  X, 
+  FileText, 
+  Download, 
+  CheckCircle2, 
+  Lightbulb, 
+  User, 
+  ShieldCheck, 
+  GraduationCap, 
+  AlertCircle,
+  Briefcase,
+  Users,
+  MapPin,
+  Award,
+  Clock,
+  ChevronRight,
+  FolderOpen
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { getAgencyLogo } from '../utils/logoMapper';
 
 const AgencyDetail = ({ agency, onClose, checklist, onToggleCheck }) => {
   if (!agency) return null;
 
-  const docFields = [
-    'KTP', 'KK', 'IJAZAH', 'TRANSKRIP NILAI', 
-    'AKREDITASI KAMPUS & PROGRAM STUDI', 'PAS FOTO ', 'SWAFOTO', 
-    'SURAT LAMARAN', 'SURAT PERNYATAAN', 'SERTIFIKAT TOEFL', 
-    'SERTIFIKAT KOMPUTER', 'SKCK', 'SURAT SEHAT', 'DOKUMEN TAMBAHAN LAINNYA'
+  const agencyName = agency['INSTANSI '];
+  const agencyChecklist = checklist[agencyName] || {};
+  const logoUrl = getAgencyLogo(agencyName);
+
+  const documents = [
+    { id: 'ktp', label: 'Kartu Tanda Penduduk (KTP)', tag: 'wajib' },
+    { id: 'kk', label: 'Kartu Keluarga (KK)', tag: 'wajib' },
+    { id: 'ijazah', label: 'Ijazah Asli Legalisir', tag: 'wajib' },
+    { id: 'transkrip', label: 'Transkrip Nilai Legalisir', tag: 'wajib' },
+    { id: 'akreditasi', label: 'Surat Akreditasi Kampus/Prodi', tag: 'wajib' },
+    { id: 'foto', label: 'Pas Foto (Background Merah)', tag: 'wajib' },
+    { id: 'swafoto', label: 'Swafoto Terbaru', tag: 'wajib' },
+    { id: 'lamaran', label: 'Surat Lamaran', tag: 'wajib' },
+    { id: 'pernyataan', label: 'Surat Pernyataan Bermaterai', tag: 'wajib' },
+    { id: 'skck', label: 'SKCK', tag: 'opsional' },
+    { id: 'sehat', label: 'Surat Sehat', tag: 'opsional' }
   ];
 
-  const pdfLink = agency['DETAIL LINK PDF'];
-  const hasPdf = pdfLink && pdfLink.startsWith('http');
+  const checkedCount = documents.filter(doc => agencyChecklist[doc.id]).length;
+  const progress = Math.round((checkedCount / documents.length) * 100);
 
-  const renderFormattedContent = (content) => {
-    if (!content || content === "Tidak Ada" || content === "Tidak ada") return <p>{content}</p>;
-    
-    // Split by newlines or explicit markers like "-" or numbers
-    const lines = content.split(/\r?\n/).filter(line => line.trim() !== "");
-    
-    if (lines.length <= 1 && !content.includes("- ")) return <p>{content}</p>;
+  const availableDegrees = agency['TERSEDIA FORMASI LULUSAN ']?.split('\r\n').map(d => d.trim()) || [];
+  const allDegrees = ['D-III', 'D-IV', 'S-1', 'S-2', 'S-3'];
 
-    return (
-      <ul className="formatted-list">
-        {lines.map((line, i) => {
-          // Clean up leading markers if present to avoid double bullets
-          const cleanLine = line.replace(/^[-•]\s*/, "").trim();
-          return <li key={i}>{cleanLine}</li>;
-        })}
-      </ul>
-    );
+  const usiaText = agency['SYARAT USIA'] || '';
+  const usiaMaks = usiaText.match(/Maksimal (\d+)/)?.[1] || '35';
+  
+  const ipkText = agency['SYARAT IPK / Nilai '] || '';
+  const ipkMin = ipkText.match(/Minimal (\d+[.,]\d+)/)?.[1] || '3.00';
+
+  const tinggiText = agency['SYARAT TINGGI BADAN'] || '';
+  const tinggiVal = tinggiText.includes('Tidak Ada') ? '-' : tinggiText.match(/(\d+)/)?.[1] || '-';
+
+  const tambahanRaw = agency['SYARAT TAMBAHAN'] || '';
+  const tambahanList = tambahanRaw.split('\r\n').filter(line => line.trim().length > 5);
+
+  const getKriteria = (text) => {
+    const k = text?.toLowerCase() || '';
+    return [
+      { id: 'umum', label: 'Umum', active: true, icon: <User size={14} /> },
+      { id: 'disabilitas', label: 'Disabilitas', active: k.includes('disabilitas'), icon: <AlertCircle size={14} /> },
+      { id: 'daerah', label: 'Putra/Putri Daerah', active: k.includes('daerah') || k.includes('papua'), icon: <MapPin size={14} /> },
+      { id: 'lulusan-terbaik', label: 'Lulusan Terbaik', active: k.includes('cumlaude') || k.includes('terbaik'), icon: <Award size={14} /> }
+    ];
   };
 
+  const kriteriaList = getKriteria(agency['KRITERIA PELAMAR']);
+
   return (
-    <div className="detail-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="detail-modal fade-in">
-        <div className="modal-header">
-          <div className="header-content">
-            <h2>{agency['INSTANSI ']}</h2>
-            <div className="header-badges">
-              <span className="badge">CPNS 2024</span>
+    <motion.div 
+      className="modal-overlay" 
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <motion.div 
+        className="detail-modal" 
+        onClick={e => e.stopPropagation()}
+        initial={{ y: "100%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: "100%", opacity: 0 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+      >
+        <button className="btn-close-modal" onClick={onClose} aria-label="Close modal">
+          <X size={20} />
+        </button>
+
+        <div className="modal-header-redesign">
+          <div className="modal-header-content">
+            <div className="modal-agency-icon">
+              {logoUrl ? (
+                <img src={logoUrl} alt={agencyName} style={{ width: '56px', height: '56px', objectFit: 'contain', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }} />
+              ) : (
+                <Briefcase size={36} />
+              )}
+            </div>
+            <div className="modal-header-info">
+              <h2>{agencyName}</h2>
+              <div className="subtitle">Informasi Persyaratan Rekrutmen CPNS</div>
+              <div className="modal-header-badges">
+                <span className="header-badge"><Clock size={14} /> Maks. {usiaMaks} Tahun</span>
+                <span className="header-badge"><Award size={14} /> IPK Min. {ipkMin}</span>
+                <span className="header-badge"><MapPin size={14} /> {tinggiVal === '-' ? 'Bebas Tinggi Badan' : `Tinggi Min. ${tinggiVal}cm`}</span>
+              </div>
             </div>
           </div>
-          <button className="close-btn" onClick={onClose} title="Tutup">
-            <X size={28} />
-          </button>
         </div>
 
-        <div className="modal-body">
-          {hasPdf && (
-            <div className="pdf-hero-section">
-              <div className="pdf-card">
-                <div className="pdf-icon-wrapper">
-                  <FileText size={40} color="var(--azure)" />
-                </div>
-                <div className="pdf-info">
-                  <h4>Dokumen Pengumuman Resmi</h4>
-                  <p>Download PDF rincian formasi dan syarat khusus dari {agency['INSTANSI ']}.</p>
-                </div>
-                <a 
-                  href={pdfLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="btn-download-pdf"
-                >
-                  <Download size={20} /> Unduh PDF
-                </a>
-              </div>
-            </div>
-          )}
-
-          <div className="info-grid">
-            <div className="info-section">
-              <h4><Calendar size={18} /> Syarat Umum</h4>
-              <div className="req-item">
-                <label>Syarat Usia</label>
-                {renderFormattedContent(agency['SYARAT USIA'])}
-              </div>
-              <div className="req-item">
-                <label>Syarat IPK / Nilai</label>
-                {renderFormattedContent(agency['SYARAT IPK / Nilai '])}
-              </div>
-              <div className="req-item">
-                <label>Jenjang Pendidikan</label>
-                {renderFormattedContent(agency['TERSEDIA FORMASI LULUSAN '])}
-              </div>
-            </div>
-
-            <div className="info-section">
-              <h4><AlertCircle size={18} /> Tahapan Seleksi</h4>
-              <div className="req-item">
-                {renderFormattedContent(agency['TAHAPAN SELEKSI'])}
-              </div>
-            </div>
-          </div>
-
-          <div className="checklist-section">
-            <div className="section-header">
-              <h3>Checklist Dokumen</h3>
-              <p className="section-desc">Siapkan dokumen ini sebelum melakukan pendaftaran online.</p>
-            </div>
-            
-            <div className="checklist-grid">
-              {docFields.map((field) => {
-                const value = agency[field];
-                if (!value || value === "Tidak Ada" || value === "Tidak ada") return null;
-                
-                const isChecked = checklist[agency['INSTANSI ']]?.[field] || false;
-
-                return (
-                  <div 
-                    key={field} 
-                    className={`checklist-item ${isChecked ? 'checked' : ''}`}
-                    onClick={() => onToggleCheck(agency['INSTANSI '], field)}
-                  >
-                    <div className="check-icon-wrapper">
-                      {isChecked ? <CheckCircle2 size={24} className="text-success" /> : <Circle size={24} className="text-muted-icon" />}
+        <div className="modal-body-redesign">
+          <div className="modal-grid-layout">
+            <div className="modal-left-col">
+              <div className="modal-section-card" style={{ marginBottom: '2rem' }}>
+                <h3><Users size={16} color="var(--primary)" /> Kriteria & Formasi</h3>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                  {kriteriaList.map(k => (
+                    <div key={k.id} style={{ 
+                      padding: '0.4rem 1rem', borderRadius: '2rem', border: '1px solid', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem',
+                      background: k.active ? 'rgba(0, 127, 255, 0.1)' : '#ffffff',
+                      borderColor: k.active ? 'var(--primary-light)' : '#e2e8f0',
+                      color: k.active ? 'var(--primary-dark)' : '#64748b'
+                    }}>
+                      {k.icon} {k.label}
                     </div>
-                    <div className="check-content">
-                      <label>{field}</label>
-                      {renderFormattedContent(value)}
+                  ))}
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {allDegrees.map(deg => (
+                    <div key={deg} style={{ 
+                      padding: '0.4rem 1rem', borderRadius: '0.5rem', fontSize: '0.85rem', fontWeight: 800,
+                      background: availableDegrees.includes(deg) ? 'var(--primary)' : '#f1f5f9',
+                      color: availableDegrees.includes(deg) ? 'white' : '#64748b',
+                      border: `1px solid ${availableDegrees.includes(deg) ? 'var(--primary)' : '#e2e8f0'}`
+                    }}>
+                      {deg}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="modal-section-card">
+                <h3><FileText size={16} color="var(--primary)" /> Syarat Tambahan</h3>
+                <ul style={{ listStyle: 'none', padding: 0 }}>
+                  {tambahanList.length > 0 ? tambahanList.map((item, i) => (
+                    <li key={i} style={{ padding: '0.75rem 0', borderBottom: '1px solid #e2e8f0', fontSize: '0.9rem', color: '#0f172a', display: 'flex', gap: '0.75rem', lineHeight: 1.5 }}>
+                      <span style={{ color: 'var(--primary-light)', fontWeight: '900', marginTop: '-2px' }}>•</span> {item}
+                    </li>
+                  )) : (
+                    <li style={{ color: '#64748b', fontSize: '0.9rem' }}>Tidak ada syarat tambahan khusus yang tercatat.</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+
+            <div className="modal-right-col">
+              <div className="modal-section-card" style={{ height: '100%' }}>
+                <h3><ShieldCheck size={16} color="var(--primary)" /> Parameter Utama</h3>
+                <div className="syarat-utama-grid">
+                  <div className="utama-item">
+                    <span className="utama-label">Batas Usia</span>
+                    <span className="utama-value">{usiaMaks} <span className="utama-unit">Thn</span></span>
+                  </div>
+                  <div className="utama-item">
+                    <span className="utama-label">Minimal IPK</span>
+                    <span className="utama-value">{ipkMin} <span className="utama-unit">/ 4.0</span></span>
+                  </div>
+                  <div className="utama-item" style={{ gridColumn: window.innerWidth > 768 && window.innerWidth < 1024 ? 'span 2' : 'auto' }}>
+                    <span className="utama-label">Tinggi Badan</span>
+                    <span className="utama-value">{tinggiVal === '-' ? 'Bebas' : `${tinggiVal} cm`}</span>
+                  </div>
+                </div>
+                
+                <div style={{ marginTop: '2rem', padding: '1.25rem', background: '#fffbeb', borderRadius: 'var(--radius-md)', border: '1px solid #fef08a' }}>
+                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                    <Lightbulb size={20} color="#d97706" style={{ flexShrink: 0 }} />
+                    <div>
+                      <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#92400e', marginBottom: '0.25rem' }}>Tips Cepat</h4>
+                      <p style={{ fontSize: '0.8rem', color: '#b45309', lineHeight: 1.5 }}>Sebagian instansi memperbolehkan surat keterangan lulus (SKL) jika ijazah belum terbit. Cek pedoman instansi.</p>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="modal-footer">
-          <button className="btn-close-modal" onClick={onClose}>Tutup</button>
-        </div>
-      </div>
+          <div className="dokumen-section">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.15rem', fontWeight: 800, color: '#0f172a' }}>
+                <FolderOpen color="var(--accent)" /> Checklist Dokumen
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#e2e8f0', padding: '0.5rem 1rem', borderRadius: '2rem' }}>
+                <div style={{ width: '100px', height: '6px', background: '#cbd5e1', borderRadius: '3px', overflow: 'hidden' }}>
+                  <div style={{ width: `${progress}%`, height: '100%', background: 'var(--primary)', transition: 'width 0.5s ease' }}></div>
+                </div>
+                <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary-dark)' }}>{progress}% Siap</span>
+              </div>
+            </div>
 
-    </div>
+            <div className="checklist-grid">
+              {documents.map(doc => (
+                <div 
+                  key={doc.id} 
+                  className={`checklist-row ${agencyChecklist[doc.id] ? 'checked' : ''}`}
+                  onClick={() => onToggleCheck(agencyName, doc.id)}
+                >
+                  <div style={{ 
+                    width: '22px', height: '22px', borderRadius: '6px', border: '2px solid', 
+                    borderColor: agencyChecklist[doc.id] ? '#22c55e' : '#cbd5e1',
+                    background: agencyChecklist[doc.id] ? '#22c55e' : 'transparent',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white',
+                    transition: 'all 0.2s'
+                  }}>
+                    {agencyChecklist[doc.id] && <CheckCircle2 size={14} strokeWidth={3} />}
+                  </div>
+                  <span className="doc-name">{doc.label}</span>
+                  <span className={`doc-tag ${doc.tag}`}>{doc.tag}</span>
+                </div>
+              ))}
+            </div>
+
+            {agency['DETAIL LINK PDF'] && (
+              <div style={{ marginTop: '3rem', textAlign: 'center' }}>
+                <a 
+                  href={agency['DETAIL LINK PDF']} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn-search"
+                  style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem' }}
+                >
+                  <Download size={18} /> Unduh Pengumuman PDF Resmi
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

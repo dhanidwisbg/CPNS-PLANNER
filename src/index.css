@@ -1,31 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
 :root {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light;
-  color: #0f172a;
-  background-color: #007fff;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  --azure: #007fff;
+  /* Dominant Azure Blue Palette */
+  --primary: #069af3;
+  --primary-light: #3db8ff;
+  --primary-dark: #057dcc;
+  --primary-glow: rgba(6, 154, 243, 0.6);
+  
+  --accent: #f59e0b;
+  --accent-light: #fcd34d;
+  
+  /* Dark Blue Web Theme */
+  --bg-main: #001f3f; /* Deep Navy/Azure base */
+  --bg-alt: rgba(0, 51, 102, 0.5); /* Semi-transparent darker blue */
+  --bg-dark: #000c1f;
+  
+  --text-main: #ffffff; /* White text for dark bg */
+  --text-muted: #94a3b8; /* Light slate for muted text on dark bg */
+  --text-light: #cbd5e1;
+  
+  --surface: rgba(255, 255, 255, 0.05); /* Glassmorphism surface */
+  --surface-solid: #ffffff; /* For modal or solid cards where dark text is needed */
+  
+  --border: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(255, 255, 255, 0.2);
+  
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  --shadow-azure: 0 10px 30px -5px var(--primary-glow);
+  
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #007fff 0%, #005bb7 50%, #003366 100%);
+  /* Rich Azure Gradient Background using #069af3 */
+  background: linear-gradient(135deg, #034873 0%, #069af3 100%);
   background-attachment: fixed;
-  color: #ffffff;
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
   overflow-x: hidden;
 }
 
@@ -34,25 +58,35 @@ button {
   border: none;
   background: none;
   font-family: inherit;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
