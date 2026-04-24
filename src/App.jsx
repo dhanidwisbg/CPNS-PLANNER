@@ -10,7 +10,7 @@ import './App.css';
 function App() {
   const [search, setSearch] = useState('');
   const [selectedAgency, setSelectedAgency] = useState(null);
-  const [filterMode, setFilterMode] = useState('all'); 
+  const [filterMode, setFilterMode] = useState('all');
   const [checklist, setChecklist] = useState(() => {
     const saved = localStorage.getItem('cpns_checklist');
     return saved ? JSON.parse(saved) : {};
@@ -54,7 +54,7 @@ function App() {
       if (filterMode === 'tracked') {
         return Object.keys(checklist[name] || {}).some(k => checklist[name][k]);
       }
-      
+
       return true;
     });
   }, [search, filterMode, checklist]);
@@ -69,7 +69,7 @@ function App() {
     }));
   };
 
-  const totalTracked = Object.keys(checklist).filter(name => 
+  const totalTracked = Object.keys(checklist).filter(name =>
     Object.values(checklist[name] || {}).some(val => val === true)
   ).length;
 
@@ -78,7 +78,7 @@ function App() {
       {/* Top Navigation */}
       <nav className="top-header">
         <div className="container header-container">
-          <motion.div 
+          <motion.div
             className="logo-container"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -91,15 +91,15 @@ function App() {
 
       <header className="hero">
         <div className="container">
-          <motion.div 
+          <motion.div
             className="hero-badge"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <span className="badge-pill">✨ Informasi CPNS 2024/2025</span>
+            <span className="badge-pill">CPNS Karier Indonesia</span>
           </motion.div>
-          
+
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -107,7 +107,7 @@ function App() {
           >
             Temukan Syarat CPNS<br />Instansi Impianmu <span>Sekarang</span>
           </motion.h1>
-          
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -115,8 +115,8 @@ function App() {
           >
             Satu portal untuk semua informasi persyaratan instansi pusat. Cepat, akurat, dan tanpa ribet baca dokumen ratusan halaman.
           </motion.p>
-          
-          <motion.div 
+
+          <motion.div
             className="search-hero"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -134,7 +134,7 @@ function App() {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="hero-stats"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
