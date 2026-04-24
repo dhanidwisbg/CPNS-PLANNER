@@ -335,6 +335,10 @@
   color: #ffffff;
   line-height: 1.4;
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-stats {
@@ -615,15 +619,17 @@
     border-radius: 1.5rem 1.5rem 0 0;
     max-height: 90vh;
   }
-  .modal-header-redesign { padding: 2rem 1.5rem; }
-  .modal-header-content { flex-direction: column; align-items: flex-start; gap: 1rem; }
-  .modal-agency-icon { width: 60px; height: 60px; }
-  .modal-header-info h2 { font-size: 1.75rem; }
+  .modal-header-redesign { padding: 1.5rem; }
+  .modal-header-content { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .modal-agency-icon { width: 50px; height: 50px; }
+  .modal-header-info h2 { font-size: 1.35rem; }
+  .modal-header-badges { gap: 0.4rem; }
+  .header-badge { padding: 0.25rem 0.6rem; font-size: 0.75rem; }
   
-  .modal-body-redesign { padding: 1.5rem; }
-  .modal-section-card, .dokumen-section { padding: 1.5rem; }
+  .modal-body-redesign { padding: 1.25rem; }
+  .modal-section-card, .dokumen-section { padding: 1.25rem; }
   
-  .syarat-utama-grid { grid-template-columns: 1fr 1fr; }
+  .syarat-utama-grid { grid-template-columns: 1fr; }
   .checklist-grid { grid-template-columns: 1fr; }
   
   .search-input-wrapper { flex-direction: column; border-radius: 1.5rem; padding: 0.5rem; background: rgba(255,255,255,0.1); }
