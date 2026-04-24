@@ -226,13 +226,13 @@ function App() {
             <div style={{ width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Zap size={20} />
             </div>
-            <span style={{ fontSize: '1.5rem', fontWeight: 900 }}>CPNS Tracker</span>
+            <span style={{ fontSize: '1.5rem', fontWeight: 900 }}>CPNS Planner</span>
           </div>
           <p style={{ color: '#94a3b8', maxWidth: '500px', margin: '0 auto 2rem', lineHeight: '1.6' }}>
-            Portal kompilasi data persyaratan CPNS 2024/2025. Membantu calon pelamar menentukan pilihan instansi dengan lebih bijak.
+            Portal kompilasi data persyaratan CPNS berdasarkan tahun 2024. Membantu calon pelamar menentukan pilihan instansi dengan lebih bijak.
           </p>
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem', fontSize: '0.85rem', color: '#64748b' }}>
-            &copy; 2026 CPNS Tracker by CPNS Karier Indonesia. Semua data bersumber dari portal resmi BKN & Instansi.
+            &copy; 2026 CPNS Planner by CPNS Karier Indonesia. Semua data bersumber dari portal resmi BKN & Instansi.
           </div>
         </div>
       </footer>

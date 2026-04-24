@@ -28,7 +28,10 @@
   height: 40px;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  background-color: white;
+  border-radius: 5px;
+  padding: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .logo-text {
