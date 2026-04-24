@@ -38,6 +38,9 @@ function App() {
       const nameMatch = name.toLowerCase().includes(search.toLowerCase());
       if (!nameMatch) return false;
 
+      // Filter out bad data entry
+      if (name.includes('Lembaga Administrasi Negara (LAN) SCIBD')) return false;
+
       if (filterMode === 'kementerian') return name.toLowerCase().includes('kementerian');
       if (filterMode === 'lembaga') return !name.toLowerCase().includes('kementerian');
       if (filterMode === 's1') return agency['TERSEDIA FORMASI LULUSAN '].includes('S-1');
@@ -223,9 +226,7 @@ function App() {
       <footer className="footer" style={{ background: 'var(--bg-dark)', color: 'white', padding: '6rem 0', marginTop: '4rem' }}>
         <div className="container" style={{ textAlign: 'center' }}>
           <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Zap size={20} />
-            </div>
+            <img src={logoImg} alt="CPNS Planner Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', background: 'white', borderRadius: '5px', padding: '4px' }} />
             <span style={{ fontSize: '1.5rem', fontWeight: 900 }}>CPNS Planner</span>
           </div>
           <p style={{ color: '#94a3b8', maxWidth: '500px', margin: '0 auto 2rem', lineHeight: '1.6' }}>
