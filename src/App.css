@@ -314,22 +314,24 @@
 .agency-icon-box {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 1rem;
+  background: white;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-light);
+  color: var(--primary-dark);
   transition: all 0.3s;
   flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .agency-card-compact:hover .agency-icon-box {
-  background: var(--primary);
-  color: white;
+  background: white;
+  color: var(--primary);
   border-color: var(--primary-light);
   transform: scale(1.05) rotate(-5deg);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .agency-name-compact {
@@ -458,15 +460,14 @@
 .modal-agency-icon {
   width: 80px;
   height: 80px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  border-radius: 1.5rem;
+  background: white;
+  border: 1px solid rgba(0,0,0,0.1);
+  color: var(--primary-dark);
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   flex-shrink: 0;
 }
 

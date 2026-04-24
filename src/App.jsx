@@ -188,7 +188,7 @@ function App() {
           <h2 style={{ fontSize: '2rem', fontWeight: 800 }}>
             {filterMode === 'all' ? 'Daftar Instansi' : `Instansi: ${filterMode}`}
           </h2>
-          <span className="results-count" style={{ background: '#f1f5f9', padding: '0.5rem 1rem', borderRadius: '2rem', fontSize: '0.85rem', fontWeight: 700 }}>
+          <span className="results-count" style={{ background: '#f1f5f9', color: 'var(--primary-dark)', padding: '0.5rem 1rem', borderRadius: '2rem', fontSize: '0.85rem', fontWeight: 800 }}>
             {filteredAgencies.length} Hasil Ditemukan
           </span>
         </div>

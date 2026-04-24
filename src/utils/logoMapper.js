@@ -16,6 +16,7 @@ export const getAgencyLogo = (agencyName) => {
     { keys: ['kejaksaan agung'], file: 'Kejaksaan_Agung_Republik_Indonesia.png' },
     { keys: ['agama'], file: 'Kementerian_Agama.png' },
     { keys: ['dewan perwakilan rakyat', 'dpr ri'], file: 'sekretariat jendral dpr ri.png' },
+    { keys: ['majelis permusyawaratan rakyat', 'mpr ri'], file: 'logo setjen mpr.png' },
     { keys: ['siber dan sandi', 'bssn'], file: 'LOGO_BSSN.png' },
     { keys: ['pariwisata', 'ekonomi kreatif'], file: 'LOGO_kementerian pariwisata ekonomi kreatif.png' },
     { keys: ['ideologi pancasila', 'bpip'], file: 'Lambang_Badan_Pembinaan_Ideologi_Pancasila.png' },
